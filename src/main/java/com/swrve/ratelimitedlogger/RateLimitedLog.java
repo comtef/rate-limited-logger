@@ -1,13 +1,11 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -57,7 +55,6 @@ public class RateLimitedLog implements Logger {
      * probable that an already-interpolated string is accidentally being used as a
      * pattern.
      */
-    @VisibleForTesting
     static final int MAX_PATTERNS_PER_LOG = 1000;
 
     private final ConcurrentHashMap<String, RateLimitedLogWithPattern> knownPatterns
@@ -73,7 +70,7 @@ public class RateLimitedLog implements Logger {
      * Start building a new RateLimitedLog, wrapping the SLF4J logger @param logger.
      */
     public static RateLimitedLogBuilder.MissingRateAndPeriod withRateLimit(Logger logger) {
-        return new RateLimitedLogBuilder.MissingRateAndPeriod(Preconditions.checkNotNull(logger));
+        return new RateLimitedLogBuilder.MissingRateAndPeriod(Objects.requireNonNull(logger));
     }
 
     // package-local ctor called by the Builder
@@ -269,6 +266,7 @@ public class RateLimitedLog implements Logger {
     public void info(Marker marker, String msg, Throwable t) {
         get(msg).info(marker, t);
     }
+
     @Override
     public boolean isWarnEnabled() {
         return logger.isWarnEnabled();
@@ -397,8 +395,8 @@ public class RateLimitedLog implements Logger {
      * settings; any periods which differ from the first one used are ignored.
      * <p/>
      * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
-     * in any one period; if this happens, it's probable that an already-interpolated string is
-     * accidentally being used as a log pattern.
+     *                               in any one period; if this happens, it's probable that an already-interpolated string is
+     *                               accidentally being used as a log pattern.
      */
     public RateLimitedLogWithPattern get(final String message) {
         // fast path: hopefully we can do this without creating a Supplier object
@@ -423,16 +421,16 @@ public class RateLimitedLog implements Logger {
     }
 
     /**
-     * @return a LogWithPatternAndLevel object for the supplied @param message and
      * @param level .  This can be cached and reused by callers in performance-sensitive
-     * cases to avoid performing two ConcurrentHashMap lookups.
-     * <p/>
-     * Note that the string is the sole key used, so the same string cannot be reused with differing period
-     * settings; any periods which differ from the first one used are ignored.
-     * <p/>
+     *              cases to avoid performing two ConcurrentHashMap lookups.
+     *              <p/>
+     *              Note that the string is the sole key used, so the same string cannot be reused with differing period
+     *              settings; any periods which differ from the first one used are ignored.
+     *              <p/>
+     * @return a LogWithPatternAndLevel object for the supplied @param message and
      * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
-     * in any one period; if this happens, it's probable that an already-interpolated string is
-     * accidentally being used as a log pattern.
+     *                               in any one period; if this happens, it's probable that an already-interpolated string is
+     *                               accidentally being used as a log pattern.
      */
     public LogWithPatternAndLevel get(String pattern, Level level) {
         return get(pattern).get(level);

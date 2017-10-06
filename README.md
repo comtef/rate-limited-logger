@@ -1,4 +1,10 @@
-RateLimitedLogger [![CircleCI badge](https://circleci.com/gh/Swrve/rate-limited-logger.svg?style=svg&circle-token=a2d7a24d30021fc04658b58c24c1758e891e66fc)](https://circleci.com/gh/Swrve/rate-limited-logger)
+RateLimitedLogger
+========
+
+## Attention 
+
+Java 8, dependency free (Guava, Jodatime) version of https://github.com/Swrve/rate-limited-logger/
+ 
 ========
 
 An SLF4J-compatible, simple, fluent API for rate-limited logging in Java.
@@ -135,10 +141,8 @@ of a few milliseconds).
 
 All versions are minimum versions -- later versions should also work fine.
 
-- Java 1.6
+- Java 1.8
 - SLF4J API 1.7.7
-- Guava 15.0
-- Joda-Time 2.3
 - Findbugs Annotations 1.0.0
 - Findbugs JSR-305 Annotations 2.0.2
 
@@ -147,15 +151,6 @@ All versions are minimum versions -- later versions should also work fine.
 
 (c) Copyright 2014-2015 Swrve Mobile Inc or its licensors.
 Distributed under version 2.0 of the Apache License, see "LICENSE".
-
-
-## Building
-
-Build all JARs, test, measure coverage:
-
-```
-  ./gradlew all
-```
 
 
 ## Credits

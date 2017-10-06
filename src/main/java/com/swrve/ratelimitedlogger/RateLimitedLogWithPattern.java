@@ -1,15 +1,15 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import net.jcip.annotations.ThreadSafe;
-import org.joda.time.Duration;
-import org.slf4j.Logger;
-import org.slf4j.Marker;
+import java.time.Duration;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicReferenceArray;
+import javax.annotation.concurrent.ThreadSafe;
+
+import org.slf4j.Logger;
+import org.slf4j.Marker;
 
 /**
  * An individual log pattern.  Each object is rate-limited individually but with separation on the log level.
@@ -34,7 +34,7 @@ public class RateLimitedLogWithPattern {
         this.logger = logger;
         this.stats = stats;
         this.stopwatch = stopwatch;
-        this.levels = new AtomicReferenceArray<LogWithPatternAndLevel>(Level.values().length);
+        this.levels = new AtomicReferenceArray<>(Level.values().length);
     }
 
     /**
@@ -175,7 +175,7 @@ public class RateLimitedLogWithPattern {
 
         boolean wasSet = levels.compareAndSet(l, null, newValue);
         if (!wasSet) {
-            return Preconditions.checkNotNull(levels.get(l));
+            return Objects.requireNonNull(levels.get(l));
         } else {
             // ensure we'll reset the counter once every period
             registry.register(newValue, rateAndPeriod.periodLength);

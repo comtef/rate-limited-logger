@@ -1,10 +1,8 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.base.Ticker;
-import org.joda.time.Duration;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -20,7 +18,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -39,7 +37,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -53,7 +51,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(500))
+                .maxRate(1).every(Duration.ofMillis(500))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -86,7 +84,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(500))
+                .maxRate(1).every(Duration.ofMillis(500))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -126,7 +124,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(3).every(Duration.millis(500))
+                .maxRate(3).every(Duration.ofMillis(500))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -167,12 +165,12 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(200))
+                .maxRate(1).every(Duration.ofMillis(200))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
         RateLimitedLog rateLimitedLog2 = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(300))
+                .maxRate(1).every(Duration.ofMillis(300))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -212,7 +210,7 @@ public class RateLimitedLogTest {
             }
         };
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .recordMetrics(mockStats)
                 .build();
@@ -233,7 +231,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -264,7 +262,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -297,7 +295,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -313,7 +311,7 @@ public class RateLimitedLogTest {
         final AtomicLong mockTime = new AtomicLong(0L);
 
         RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(10))
+                .maxRate(1).every(Duration.ofMillis(10))
                 .withStopwatch(createStopwatch(mockTime))
                 .build();
 
@@ -324,12 +322,7 @@ public class RateLimitedLogTest {
     }
 
     private Stopwatch createStopwatch(final AtomicLong mockTime) {
-        return Stopwatch.createUnstarted(new Ticker() {
-            @Override
-            public long read() {
-                return mockTime.get();
-            }
-        });
+       return new Stopwatch(mockTime.get());
     }
 
 }

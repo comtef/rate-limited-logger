@@ -1,17 +1,16 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.base.Stopwatch;
-import net.jcip.annotations.GuardedBy;
-import net.jcip.annotations.ThreadSafe;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
 
 /**
  * An individual log pattern and level - the unit of rate limiting.  Each object is rate-limited
@@ -136,7 +135,8 @@ public class LogWithPatternAndLevel {
         if (numSuppressed == 0) {
             return;  // special case: we hit the rate limit, but did not actually exceed it -- nothing got suppressed, so there's no need to log
         }
-        Duration howLong = new Duration(whenLimited, elapsedMsecs());
+
+        Duration howLong = Duration.ofMillis(whenLimited).plusMillis(elapsedMsecs());
         level.log(logger, "(suppressed {} logs similar to '{}' in {})", numSuppressed, message, howLong);
     }
 
@@ -145,7 +145,7 @@ public class LogWithPatternAndLevel {
     }
 
     private long elapsedMsecs() {
-        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        long elapsed = stopwatch.elapsedTime(TimeUnit.MILLISECONDS);
         if (elapsed == NOT_RATE_LIMITED_YET) {
             elapsed++;  // avoid using the magic value by "rounding up"
         }
@@ -187,6 +187,8 @@ public class LogWithPatternAndLevel {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(message, level.ordinal());
+        int result = message.hashCode();
+        result = 31 * result + level.ordinal();
+        return result;
     }
 }
